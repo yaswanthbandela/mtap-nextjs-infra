@@ -5,7 +5,7 @@ variable "region" {
 
 variable "vpc_id" {
   description = "VPC ID where the EC2 instance will be deployed"
-  default     = "vpc-0fc43d82243033d68"
+  default     = "vpc-0382bcc1a39154f0a"
 }
 
 variable "instance_type" {
@@ -42,12 +42,11 @@ variable "ec2_tag_value" {
 variable "github_token" {
   description = "GitHub Personal Access Token"
   type        = string
-  sensitive   = true
 }
 
 variable "github_repo" {
   description = "GitHub repository name"
-  default     = "hureka/mtap-nextjs"  # Replace with your GitHub repo name
+  default     = "yaswanthbandela/mtap-nextjs"  # Replace with your GitHub repo name
 }
 
 variable "github_branch" {

@@ -1,9 +1,13 @@
+resource "aws_s3_bucket" "codepipeline_bucket" {
+  bucket = "${var.pipeline_name}-artifacts"
+}
 resource "aws_codepipeline" "mtap_nextjs_pipeline" {
   name     = var.pipeline_name
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
     type = "S3"
+    location = aws_s3_bucket.codepipeline_bucket.bucket
   }
 
   stage {
@@ -13,15 +17,19 @@ resource "aws_codepipeline" "mtap_nextjs_pipeline" {
       category         = "Source"
       owner            = "ThirdParty"
       provider         = "GitHub"
-      version          = "1"
+      version          = "2"
       output_artifacts = ["source_output"]
-
       configuration = {
-        Owner         = split("/", var.github_repo)[0]
+        ConnectionArn = "arn:aws:codeconnections:us-east-1:484907490966:connection/0719d3d9-59e4-41f8-86ff-b6ee914092c7"  # Use your CodeStar connection ARN
         Repo          = split("/", var.github_repo)[1]
         Branch        = var.github_branch
-        OAuthToken    = var.github_token
       }
+      # configuration = {
+      #   Owner         = split("/", var.github_repo)[0]
+      #   Repo          = split("/", var.github_repo)[1]
+      #   Branch        = var.github_branch
+      #   OAuthToken    = var.github_token
+      # }
     }
   }
 
