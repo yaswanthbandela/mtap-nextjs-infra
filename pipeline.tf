@@ -3,8 +3,7 @@ resource "aws_codepipeline" "mtap_nextjs_pipeline" {
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
-    location = var.s3_bucket_name != "" ? var.s3_bucket_name : "codepipeline-default-bucket"
-    type     = "S3"
+    type = "S3"
   }
 
   stage {
@@ -18,8 +17,8 @@ resource "aws_codepipeline" "mtap_nextjs_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner         = split("/", var.github_repo)[0]      # Extract GitHub owner from repo name
-        Repo          = split("/", var.github_repo)[1]      # Extract GitHub repository
+        Owner         = split("/", var.github_repo)[0]
+        Repo          = split("/", var.github_repo)[1]
         Branch        = var.github_branch
         OAuthToken    = var.github_token
       }
