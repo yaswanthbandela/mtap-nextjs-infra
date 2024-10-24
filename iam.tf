@@ -62,6 +62,38 @@ resource "aws_iam_policy" "codepipeline_additional_policy" {
           "arn:aws:codebuild:${var.region}:${var.account_id}:project/*"
         ]
         Effect = "Allow"
+      },
+      {
+            "Effect": "Allow",
+            "Action": [
+                "codedeploy:CreateDeployment",
+                "codedeploy:GetDeployment",
+                "codedeploy:StopDeployment",
+                "codedeploy:ListDeployments",
+                "codedeploy:GetDeploymentConfig",
+                "codedeploy:RegisterApplicationRevision",
+                "codedeploy:CreateDeploymentConfig",
+                "codedeploy:ListDeploymentConfigs",
+                "codedeploy:GetApplicationRevision" 
+            ],
+            Resource= [ 
+              "arn:aws:codedeploy:${var.region}:${var.account_id}:deploymentgroup:${aws_codedeploy_app.mtap_nextjs_deploy.name}/*",
+              "arn:aws:codedeploy:${var.region}:${var.account_id}:application:${aws_codedeploy_app.mtap_nextjs_deploy.name}",
+              "arn:aws:codedeploy:${var.region}:${var.account_id}:deploymentconfig:CodeDeployDefault.AllAtOnce"
+            ]
+        },
+        {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceStatus",
+          "ec2:StopInstances",
+          "ec2:StartInstances",
+          "ec2:TerminateInstances",
+          "ec2:DescribeRegions",
+          "tag:GetResources"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -78,14 +110,43 @@ resource "aws_iam_role" "codedeploy_role" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
+    Statement = [
+      {
       Action    = "sts:AssumeRole"
       Effect    = "Allow"
       Principal = {
         Service = "codedeploy.amazonaws.com"
       }
-    }]
+    }
+    
+      ]
   })
+}
+resource "aws_iam_policy" "codedeploy_additional_policy" {
+  name = "CodeDeployAdditionalPolicy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [   
+     {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceStatus",
+          "ec2:StopInstances",
+          "ec2:StartInstances",
+          "ec2:TerminateInstances",
+          "ec2:DescribeRegions",
+          "tag:GetResources"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "codedeploy_additional_policy_attach" {
+  role       = aws_iam_role.codedeploy_role.name
+  policy_arn = aws_iam_policy.codedeploy_additional_policy.arn
 }
 
 resource "aws_iam_role_policy_attachment" "codedeploy_policy" {
@@ -179,3 +240,31 @@ resource "aws_iam_role_policy_attachment" "codedeploy_ec2_policy" {
   role       = aws_iam_role.codedeploy_ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
+
+# Additional permissions for S3 in CodeDeploy EC2 Role
+resource "aws_iam_policy" "codedeploy_ec2_additional_policy" {
+  name = "CodeDeployEC2AdditionalPolicy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.codepipeline_bucket.bucket}", # Bucket ARN
+          "arn:aws:s3:::${aws_s3_bucket.codepipeline_bucket.bucket}/*" # Objects in the bucket
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "codedeploy_ec2_additional_policy_attach" {
+  role       = aws_iam_role.codedeploy_ec2_role.name
+  policy_arn = aws_iam_policy.codedeploy_ec2_additional_policy.arn
+}
+

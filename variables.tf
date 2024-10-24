@@ -63,3 +63,9 @@ variable "codestar_connection_arn" {
   description = "code star connection arn"
   default     = "arn:aws:codestar-connections:us-east-1:484907490966:connection/50946584-428b-403c-a897-9e00f7e297b3"
 }
+
+variable "domain_name" {
+  description = "Domain name for the NGINX server"
+  type        = string
+  default     = "test.byklabs.store"
+}

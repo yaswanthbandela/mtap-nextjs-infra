@@ -38,9 +38,11 @@ resource "aws_instance" "mtap_nextjs_server" {
   ami           = var.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
-  user_data = file("userdata.sh")
+  user_data = templatefile("${path.module}/userdata.sh", {
+    domain_name = var.domain_name
+    })
   iam_instance_profile = aws_iam_instance_profile.codedeploy_ec2_instance_profile.name
-  security_groups = [aws_security_group.mtap_nextjs_server_sg.name]
+  security_groups = [aws_security_group.mtap_nextjs_server_sg.id]
 
   tags = {
     Name = "mtap-nextjs-server"

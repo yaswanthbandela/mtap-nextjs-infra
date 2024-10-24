@@ -81,7 +81,7 @@ resource "aws_codepipeline" "mtap_nextjs_pipeline" {
 
       configuration = {
         ApplicationName     = aws_codedeploy_app.mtap_nextjs_deploy.name
-        DeploymentGroupName = aws_codedeploy_deployment_group.mtap_nextjs_deploy_dg.id
+        DeploymentGroupName = element(split("/", aws_codedeploy_deployment_group.mtap_nextjs_deploy_dg.arn ), 1)
       }
     }
   }
