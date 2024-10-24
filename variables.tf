@@ -54,3 +54,7 @@ variable "github_branch" {
   default     = "main"
 }
 
+variable "codestar_connection_arn" {
+  description = "code star connection arn"
+  default     = "arn:aws:codeconnections:us-east-1:484907490966:connection/0719d3d9-59e4-41f8-86ff-b6ee914092c7"
+}
