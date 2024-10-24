@@ -50,7 +50,17 @@ resource "aws_iam_policy" "codepipeline_additional_policy" {
         Action = [
           "codestar-connections:UseConnection"
         ]
-        Resource = "arn:aws:codestar-connections:us-east-1:484907490966:connection/*"
+        Resource = "arn:aws:codestar-connections:${var.region}:${var.account_id}:connection/*"
+        Effect = "Allow"
+      },
+      {
+        Action = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds"
+        ]
+        Resource = [
+          "arn:aws:codebuild:${var.region}:${var.account_id}:project/*"
+        ]
         Effect = "Allow"
       }
     ]

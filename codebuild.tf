@@ -14,7 +14,7 @@ resource "aws_codebuild_project" "mtap_nextjs_build" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:4.0"
+    image                       = "aws/codebuild/standard:7.0"
     type                        = "LINUX_CONTAINER"
     environment_variable {
       name  = "ENV"

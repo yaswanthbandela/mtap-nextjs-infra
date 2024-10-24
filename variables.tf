@@ -3,6 +3,11 @@ variable "region" {
   default     = "us-east-1"
 }
 
+variable "account_id" {
+  description = "aws account id"
+  default     = "484907490966"
+}
+
 variable "vpc_id" {
   description = "VPC ID where the EC2 instance will be deployed"
   default     = "vpc-0382bcc1a39154f0a"
