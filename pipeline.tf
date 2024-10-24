@@ -1,17 +1,24 @@
+# S3 bucket for CodePipeline artifacts
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = "${var.pipeline_name}-artifacts"
+}
 
-  # Add versioning to ensure artifact integrity
-  versioning {
-    enabled = true
+# Versioning for the S3 bucket
+resource "aws_s3_bucket_versioning" "codepipeline_bucket_versioning" {
+  bucket = aws_s3_bucket.codepipeline_bucket.bucket
+
+  versioning_configuration {
+    status = "Enabled"
   }
+}
 
-  # Optionally, enable server-side encryption for security
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+# Server-side encryption for the S3 bucket
+resource "aws_s3_bucket_server_side_encryption_configuration" "codepipeline_bucket_sse" {
+  bucket = aws_s3_bucket.codepipeline_bucket.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -36,7 +43,7 @@ resource "aws_codepipeline" "mtap_nextjs_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn        = var.codestar_connection_arn  # Make sure to reference as a variable
+        ConnectionArn        = var.codestar_connection_arn
         Branch               = var.github_branch
         FullRepositoryId     = var.github_repo
         DetectChanges        = "true"
