@@ -15,7 +15,7 @@ override.tf.json
 *_override.tf.json
 
 # Terraform variable files
-*.tfvars
+
 *.tfvars.json
 
 # Private key files for TLS
