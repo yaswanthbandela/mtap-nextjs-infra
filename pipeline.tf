@@ -39,12 +39,12 @@ resource "aws_codepipeline" "mtap_nextjs_pipeline" {
       category         = "Source"
       owner            = "AWS"
       provider         = "CodeStarSourceConnection"
-      version          = "2"
+      version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
         ConnectionArn        = var.codestar_connection_arn
-        Branch               = var.github_branch
+        BranchName           = var.github_branch
         FullRepositoryId     = var.github_repo
         DetectChanges        = "true"
         OutputArtifactFormat = "CODE_ZIP"

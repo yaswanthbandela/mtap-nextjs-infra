@@ -45,6 +45,13 @@ resource "aws_iam_policy" "codepipeline_additional_policy" {
         ]
         Resource = "*"
         Effect = "Allow"
+      },
+      {
+        Action = [
+          "codestar-connections:UseConnection"
+        ]
+        Resource = "arn:aws:codestar-connections:us-east-1:484907490966:connection/*"
+        Effect = "Allow"
       }
     ]
   })
