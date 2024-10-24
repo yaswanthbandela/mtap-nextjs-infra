@@ -42,7 +42,7 @@ resource "aws_instance" "mtap_nextjs_server" {
     domain_name = var.domain_name
     })
   iam_instance_profile = aws_iam_instance_profile.codedeploy_ec2_instance_profile.name
-  security_groups = [aws_security_group.mtap_nextjs_server_sg.id]
+  security_groups = [aws_security_group.mtap_nextjs_server_sg.name]
 
   tags = {
     Name = "mtap-nextjs-server"
